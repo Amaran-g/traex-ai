@@ -1,17 +1,3 @@
-{
-  "version": 2,
-  "public": true,
-  "name": "traex-ai",
-  "builds": [
-    { "src": "index.html", "use": "@vercel/static" }
-  ]
-}
-- name: Deploy to Vercel (optional)
-  if: success()
-  run: |
-    echo "Deploying to Vercel..."
-    npm install -g vercel
-    vercel deploy --prod --confirm --token ${{ secrets.VERCEL_TOKEN }}
 <!DOCTYPE html>
 <html lang="en">
 <head>
