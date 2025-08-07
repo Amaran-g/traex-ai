@@ -1,45 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TRAEX AI - Global AI Stock Platform</title>
-  <meta name="description" content="TRAEX AI is the world’s AI-powered portfolio, stock alerts & trading platform. Built by G Group.">
-  <meta name="keywords" content="TRAEX AI, stock trading, AI portfolio, G Group, AI alerts, investments, trading bot">
+# .github/workflows/auto-update.yml
+name: Auto Update TRAEX AI Site
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="TRAEX AI - Global AI Stock Platform" />
-  <meta property="og:description" content="TRAEX AI is the world’s AI-powered portfolio, stock alerts & trading platform. Built by G Group." />
-  <meta property="og:image" content="https://your-deployment-url/logo.png" />
-  <meta property="og:type" content="website" />
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 0 * * *' # Every day at 6AM IST
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="TRAEX AI - Global AI Stock Platform" />
-  <meta name="twitter:description" content="TRAEX AI is the world’s AI-powered portfolio, stock alerts & trading platform. Built by G Group." />
-  <meta name="twitter:image" content="https://your-deployment-url/logo.png" />
+jobs:
+  update-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
-      background: #000;
-      overflow-x: hidden;
-    }
-    header {
-      position: relative;
-      height: 100vh;
-      overflow: hidden;
-    }
-    video.background-video {
-      position: absolute;
-      top: 0;
-      left: 0;
+      - name: Set up Git
+        run: |
+          git config user.name "TRAEX AI Bot"
+          git config user.email "bot@traex.global"
+
+      - name: Fetch latest index.html from AI
+        run: |
+          curl -o index.html https://raw.githubusercontent.com/Amaran-g/traex-ai-main/main/index.html
+
+      - name: Commit & Push
+        run: |
+          git add index.html
+          git commit -m "🤖 Auto-update: refreshed index.html from AI"
+          git push
       width: 100%;
       height: 100%;
       object-fit: cover;
