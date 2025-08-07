@@ -19,7 +19,7 @@ jobs:
 
       - name: Fetch latest index.html from AI
         run: |
-          curl -o index.html https://raw.githubusercontent.com/Amaran-g/traex-ai-main/main/index.html
+          curl -o index.html https://raw.githubusercontent.com/Amaran-g/traex-ai/main/index.html
 
       - name: Commit & Push
         run: |
