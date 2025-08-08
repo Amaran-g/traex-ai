@@ -1,0 +1,57 @@
+name: Auto Update TRAEX AI Site
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 0 * * *' # Every day at 6AM IST
+
+jobs:
+  update-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "TRAEX AI Bot"
+          git config user.email "bot@traex.global"
+
+      - name: Fetch latest index.html from AI
+        run: |
+          curl -o index.html https://raw.githubusercontent.com/Amaran-g/traex-ai/main/index.html
+
+      - name: Commit & Push
+        run: |
+          git add index.html
+          git commit -m "🤖 Auto-update: refreshed index.html from AI" || echo "No changes to commit"
+          git push || echo "Nothing to push"
+
+      - name: Deploy to Firebase (optional)
+        if: success()
+        run: |
+          echo "Deploying to Firebase..."
+          curl -sL https://firebase.tools | bash
+          firebase deploy --project traex-ai --only hosting
+
+      - name: Deploy to Vercel (optional)
+        if: success()
+        run: |
+          echo "Deploying to Vercel..."
+          npm install -g vercel
+          vercel deploy --prod --confirm --token ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Upload to GitHub Pages (auto)
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+
+      - name: Notify via Slack (optional)
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: "TRAEX AI Site Auto-Updated"
+          SLACK_MESSAGE: "✅ index.html updated and deployed."
+          SLACK_COLOR: "#36a64f"
