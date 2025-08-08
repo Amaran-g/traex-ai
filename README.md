@@ -17,14 +17,33 @@ jobs:
           git config user.name "TRAEX AI Bot"
           git config user.email "bot@traex.global"
 
-      - name: Fetch latest index.html from AI
+      - name: Fetch latest index.html from GitHub
         run: |
-          curl -o index.html https://raw.githubusercontent.com/Amaran-g/traex-ai/main/index.html
+          curl -L -o index.html https://raw.githubusercontent.com/Amaran-g/traex-ai/main/index.html
 
       - name: Commit & Push
         run: |
           git add index.html
-          git commit -m "🤖 Auto-update: refreshed index.html from AI"
+          git commit -m "🤖 Auto-update: refreshed index.html from AI" || echo "No changes to commit"
+          git push || echo "Nothing to push"
+
+      - name: Deploy to Vercel
+        run: |
+          echo "Deploying to Vercel..."
+          npm install -g vercel
+          vercel deploy --prod --confirm --token ${{ secrets.VERCEL_TOKEN }}
+
+      # Firebase step is disabled unless configured
+      # - name: Deploy to Firebase
+      #   run: |
+      #     curl -sL https://firebase.tools | bash
+      #     firebase deploy --project traex-ai --only hosting
+
+      - name: Upload to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
           git push
 . (root)
 ├── index.html
